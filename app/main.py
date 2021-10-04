@@ -50,12 +50,9 @@ def shotgun_cotisant(entry: schemas.ShotgunCotisant, db: Session = Depends(get_d
     # TODO : test if cotisant
     # enter shotgun into db
     db_shotgun = models.ShotgunCotisantEntry(**entry.dict())
-    st = time.perf_counter()
     try:
         db.add(db_shotgun)
         db.commit()
-        db.refresh(db_shotgun)
-        print(f"Transaction duration : {time.perf_counter()-st}s")
     except IntegrityError as e:
         raise HTTPException(400, detail="Tu as déjà shotgun")
     return db_shotgun.__dict__
