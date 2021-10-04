@@ -24,6 +24,7 @@ services:
       - 5432:5432
   pgadmin:
     image: dpage/pgadmin4
+    command: postgres -c "max_connections=200"
     depends_on:
       - db
     environment:
