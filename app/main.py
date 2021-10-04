@@ -1,5 +1,6 @@
 import time
 from fastapi import FastAPI, Depends, HTTPException
+import profiling_module as profile
 
 from db import SessionLocal, engine
 import schemas, models
@@ -34,28 +35,30 @@ def shotgun(entry: schemas.Shotgun, db: Session = Depends(get_db), recaptcha_res
 
 @app.post("/shotgun-cotisant/", response_model=schemas.ShotgunCotisant)
 def shotgun_cotisant(entry: schemas.ShotgunCotisant, db: Session = Depends(get_db), recaptcha_response_token: str = ""):
-    # check time
-    if datetime.now() < SHOTGUN_COTISANT_TIME:
-        raise HTTPException(400, "Le shotgun n'est pas encore ouvert")
-    # TODO : test recaptcha
-    params = {
-        "secret": RECAPTCHA_SECRET,
-        "response": recaptcha_response_token
-    }
-    res = requests.post("https://www.google.com/recaptcha/api/siteverify", data=params).json()
-    # Bypassing recaptcha for tests
-    """if not res["success"] or res["action"] != "shotgun" or res["score"] < 0.5:
-        error = res["error-codes"][0]
-        raise HTTPException(403, f"La validation Recaptcha a échoué : {error}")"""
-    # TODO : test if cotisant
-    # enter shotgun into db
-    db_shotgun = models.ShotgunCotisantEntry(**entry.dict())
-    try:
-        db.add(db_shotgun)
-        db.commit()
-    except IntegrityError as e:
-        raise HTTPException(400, detail="Tu as déjà shotgun")
-    return entry.dict()
+    # profiling
+    with profile.profiled():
+        # check time
+        if datetime.now() < SHOTGUN_COTISANT_TIME:
+            raise HTTPException(400, "Le shotgun n'est pas encore ouvert")
+        # TODO : test recaptcha
+        params = {
+            "secret": RECAPTCHA_SECRET,
+            "response": recaptcha_response_token
+        }
+        res = requests.post("https://www.google.com/recaptcha/api/siteverify", data=params).json()
+        # Bypassing recaptcha for tests
+        """if not res["success"] or res["action"] != "shotgun" or res["score"] < 0.5:
+            error = res["error-codes"][0]
+            raise HTTPException(403, f"La validation Recaptcha a échoué : {error}")"""
+        # TODO : test if cotisant
+        # enter shotgun into db
+        db_shotgun = models.ShotgunCotisantEntry(**entry.dict())
+        try:
+            db.add(db_shotgun)
+            db.commit()
+        except IntegrityError as e:
+            raise HTTPException(400, detail="Tu as déjà shotgun")
+        return entry.dict()
 
 @app.get("/shotgun/{email}", response_model=schemas.ShotgunEntry)
 def get_shotgun_entry(email: str, db: Session = Depends(get_db)):
