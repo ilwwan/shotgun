@@ -55,7 +55,7 @@ def shotgun_cotisant(entry: schemas.ShotgunCotisant, db: Session = Depends(get_d
         db.commit()
     except IntegrityError as e:
         raise HTTPException(400, detail="Tu as déjà shotgun")
-    return db_shotgun.__dict__
+    return entry.dict()
 
 @app.get("/shotgun/{email}", response_model=schemas.ShotgunEntry)
 def get_shotgun_entry(email: str, db: Session = Depends(get_db)):
