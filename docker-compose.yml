@@ -24,7 +24,12 @@ services:
       - 5432:5432
   pgadmin:
     image: dpage/pgadmin4
-    command: postgres -c "max_connections=200"
+    command: 
+      - "postgres"
+      - "-c"
+      - "max_connections=400"
+      - "-c"
+      - "shared_buffers=2GB"
     depends_on:
       - db
     environment:
