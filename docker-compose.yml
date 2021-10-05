@@ -29,9 +29,9 @@ services:
     command: 
       - "postgres"
       - "-c"
-      - "max_connections=400"
+      - "max_connections=800"
       - "-c"
-      - "shared_buffers=2GB"
+      - "shared_buffers=4GB"
     depends_on:
       - db
     environment:

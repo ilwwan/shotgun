@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 
 DATABASE_URL = "postgresql://postgres:123456@db:5432/postgres"
 
-engine = create_engine(DATABASE_URL, pool_size=100, max_overflow=0, connect_args={'connect_timeout': 10})
+engine = create_engine(DATABASE_URL, pool_size=200, max_overflow=500, connect_args={'connect_timeout': 10})
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
