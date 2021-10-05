@@ -38,8 +38,8 @@ def shotgun_cotisant(entry: schemas.ShotgunCotisant, db: Session = Depends(get_d
     # profiling
     # with profile.profiled():
     # Randomly reject requests
-    if random.getrandbits(1):
-        raise HTTPException(429, "Retry later")
+    # if random.getrandbits(1):
+    #     raise HTTPException(429, "Retry later")
     # check time
     if datetime.now() < SHOTGUN_COTISANT_TIME:
         raise HTTPException(400, "Le shotgun n'est pas encore ouvert")
