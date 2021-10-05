@@ -22,6 +22,8 @@ services:
     restart: always
     ports:
       - 5432:5432
+    volumes:
+      - psql:/var/lib/postgresql/data
   pgadmin:
     image: dpage/pgadmin4
     command: 
@@ -41,6 +43,8 @@ services:
       - PGADMIN_LISTEN_PORT=8080
     ports:
       - 8080:8080
+    volumes:
+      - ./pgadmin/:/var/lib/pgadmin/storage
   nginx:
     build: ./nginx
     ports: 
@@ -49,5 +53,6 @@ services:
       - api
     restart: always
     
-
+volumes:
+  psql:
     
