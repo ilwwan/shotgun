@@ -44,7 +44,7 @@ services:
     ports:
       - 8080:8080
     volumes:
-      - ./pgadmin/:/var/lib/pgadmin/storage
+      - ./pgadmin/:/var/lib/pgadmin4/storage
   nginx:
     build: ./nginx
     ports: 
