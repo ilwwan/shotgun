@@ -1,4 +1,3 @@
-import time
 from fastapi import FastAPI, Depends, HTTPException
 import profiling_module as profile
 
@@ -8,6 +7,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime, timezone, timedelta
 import requests
+import random
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -37,6 +37,9 @@ def shotgun(entry: schemas.Shotgun, db: Session = Depends(get_db), recaptcha_res
 def shotgun_cotisant(entry: schemas.ShotgunCotisant, db: Session = Depends(get_db), recaptcha_response_token: str = ""):
     # profiling
     # with profile.profiled():
+    # Randomly reject requests
+    if random.getrandbits(1):
+        raise HTTPException(429, "Retry later")
     # check time
     if datetime.now() < SHOTGUN_COTISANT_TIME:
         raise HTTPException(400, "Le shotgun n'est pas encore ouvert")
