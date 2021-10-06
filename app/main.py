@@ -48,7 +48,7 @@ def shotgun_cotisant(entry: schemas.ShotgunCotisant, db: Session = Depends(get_d
         "secret": RECAPTCHA_SECRET,
         "response": recaptcha_response_token
     }
-    res = requests.post("https://www.google.com/recaptcha/api/siteverify", data=params).json()
+    # res = requests.post("https://www.google.com/recaptcha/api/siteverify", data=params).json()
     # Bypassing recaptcha for tests
     """if not res["success"] or res["action"] != "shotgun" or res["score"] < 0.5:
         error = res["error-codes"][0]
