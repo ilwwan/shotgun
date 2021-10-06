@@ -15,7 +15,7 @@ def test(connections, transactions):
 
 
 def generate_transaction():
-    return f"INSERT INTO shotgun_cotisant_entry(first_name, last_name, email, phone_number, vr_username) VALUES ({randstr(10)}, {randstr(10)}, {randstr(10)}, {randstr(10)}, {randstr(10)})"
+    return f"INSERT INTO shotgun_cotisant_entry(first_name, last_name, email, phone_number, vr_username) VALUES ('{randstr(10)}', '{randstr(10)}', '{randstr(10)}', '{randstr(10)}', '{randstr(10)}')"
 
 def randstr(x):
     return "".join(random.choice(string.ascii_letters) for _ in range(x))
