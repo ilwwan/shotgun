@@ -23,4 +23,4 @@ def randstr(x):
     return "".join(random.choice(string.ascii_letters) for _ in range(x))
 
 if __name__ == "__main__":
-    test()
+    test(None, 25)
