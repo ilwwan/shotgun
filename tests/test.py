@@ -9,9 +9,10 @@ def test(connections, transactions):
     for t in range(transactions):
         with conn.cursor() as c:
             c.execute(generate_transaction())
-    te = time.perf_counter() - ts
-    print(f"Took {te-ts} seconds to perform {transactions} transactions")
-    print(f"Transactions per second : {transactions/(te-ts)}")
+            c.commit()
+    t = time.perf_counter() - ts
+    print(f"Took {t} seconds to perform {transactions} transactions")
+    print(f"Transactions per second : {transactions/t}")
 
 
 def generate_transaction():
