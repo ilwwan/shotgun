@@ -45,10 +45,14 @@ def shotgun_cotisant(entry: schemas.ShotgunCotisant, db: Session = Depends(get_d
         raise HTTPException(400, "Le shotgun n'est pas encore ouvert")
     # TODO : test recaptcha
     params = {
-        "secret": RECAPTCHA_SECRET,
-        "response": recaptcha_response_token
+        "event": {
+            "token": recaptcha_response_token,
+            "siteKey": "6LcQBbIcAAAAABGuNsalSBIG4E765X-Pwl1l61MS",
+            "expectedAction": "shotgun"
+        }
     }
-    # res = requests.post("https://www.google.com/recaptcha/api/siteverify", data=params).json()
+    res = requests.post("https://recaptchaenterprise.googleapis.com/v1beta1/projects/shotgun-bdecs/assessments?key=AIzaSyC_I3luDsWhOI3ERo2OG2BtAT0R3VcE85M", data=params).json()
+    print(res)
     # Bypassing recaptcha for tests
     """if not res["success"] or res["action"] != "shotgun" or res["score"] < 0.5:
         error = res["error-codes"][0]
