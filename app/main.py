@@ -53,6 +53,7 @@ def shotgun_cotisant(entry: schemas.ShotgunCotisant, db: Session = Depends(get_d
     }
     res = requests.post("https://recaptchaenterprise.googleapis.com/v1beta1/projects/shotgun-bdecs/assessments?key=AIzaSyC_I3luDsWhOI3ERo2OG2BtAT0R3VcE85M", data=params).json()
     print(res)
+    print("TEST")
     # Bypassing recaptcha for tests
     """if not res["success"] or res["action"] != "shotgun" or res["score"] < 0.5:
         error = res["error-codes"][0]
