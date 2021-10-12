@@ -8,14 +8,16 @@ from sqlalchemy.exc import IntegrityError
 from datetime import datetime, timezone, timedelta
 import requests
 import random
+import os
 
 models.Base.metadata.create_all(bind=engine)
 
 
-SHOTGUN_COTISANT_TIME = datetime(2021, 9, 30, 12, 00)
-RECAPTCHA_SECRET = "6LejcaQcAAAAAGpcX6D3rubls6xMcAOhERpiLZAJ"
-MAX_COTISANTS = 1
-MAX_EXTE = 400
+SHOTGUN_COTISANT_TIME = datetime.fromtimestamp(os.environ.get("SHOTGUN_TIME", 0))
+RECAPTCHA_SECRET = os.environ.get("RECAPTCHA_SECRET", None)
+MAX_COTISANTS = os.environ.get("MAX_COTISANTS", 0)
+MAX_EXTE = os.environ.get("MAX_EXTES", 0)
+RECAPTCHA_SITE_KEY = os.environ.get("RECAPTCHA_SITE_KEY", None)
 
 app = FastAPI()
 
@@ -47,24 +49,16 @@ def shotgun_cotisant(entry: schemas.ShotgunCotisant, db: Session = Depends(get_d
     if datetime.now() < SHOTGUN_COTISANT_TIME:
         raise HTTPException(400, "Le shotgun n'est pas encore ouvert")
     # TODO : test recaptcha
-    # params = {
-    #     "event": {
-    #         "token": recaptcha_response_token,
-    #         "siteKey": "6LcQBbIcAAAAABGuNsalSBIG4E765X-Pwl1l61MS",
-    #         "expectedAction": "shotgun"
-    #     }
-    # }
-    # res = requests.post("https://recaptchaenterprise.googleapis.com/v1beta1/projects/shotgun-bdecs/assessments?key=AIzaSyC_I3luDsWhOI3ERo2OG2BtAT0R3VcE85M", data=params).json()
-    # print(res)
+    
     # Bypassing recaptcha for tests
     """if not res["success"] or res["action"] != "shotgun" or res["score"] < 0.5:
         error = res["error-codes"][0]
         raise HTTPException(403, f"La validation Recaptcha a échoué : {error}")"""
-    # TODO : test if cotisant
     # enter shotgun into db
     db_shotgun = models.ShotgunCotisantEntry(**entry.dict())
     try:
         db.add(db_shotgun)
+        # TODO : test if cotisant (ici parce qu'on minimise les appels API)
         db.commit()
     except IntegrityError as e:
         raise HTTPException(400, detail="Tu as déjà shotgun")
